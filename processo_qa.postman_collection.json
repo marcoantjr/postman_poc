@@ -1,0 +1,467 @@
+{
+	"info": {
+		"_postman_id": "6a882416-5dc0-4322-a079-a753e4f1bbdf",
+		"name": "Processo QA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4432d7b0-8461-4b0e-a3e8-18fa0503e091",
+						"exec": [
+							"//Getting path for execution\r",
+							"let executionPath = pm.variables.get(\"path\");\r",
+							"\r",
+							"//Getting response data in json format\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"//Setting access_token to an environment variable for next requests\r",
+							"pm.environment.set(\"accessToken\", \"\");\r",
+							"let token = jsonData.access_token;\r",
+							"pm.environment.set('accessToken', token);\r",
+							"\r",
+							"//Validanting json type\r",
+							"pm.test(\"should return a valid json\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"if(executionPath === \"success\" || executionPath === \"api_error\" ){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 200 response\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid for success response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"loginSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"\r",
+							"    //Validanting static response data\r",
+							"    pm.test(\"should have expires_in equal 3600\", function (){\r",
+							"        pm.expect(jsonData.expires_in).to.eql(3600);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have refresh_expires_in equal 1800\", function (){\r",
+							"        pm.expect(jsonData.refresh_expires_in).to.eql(1800);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have token_type equal bearer\", function (){\r",
+							"        pm.expect(jsonData.token_type).to.eql(\"bearer\");\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have not-before-policy equal 0\", function (){\r",
+							"        pm.expect(jsonData['not-before-policy']).to.eql(0);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have scope equal profile email\", function (){\r",
+							"        pm.expect(jsonData.scope).to.eql(\"profile email\");\r",
+							"    });\r",
+							"} else if(executionPath === \"login_error\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 401 response\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid for error response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "darwin-client",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{loginUrl}}/auth/realms/darwin/protocol/openid-connect/token",
+					"host": [
+						"{{loginUrl}}"
+					],
+					"path": [
+						"auth",
+						"realms",
+						"darwin",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				},
+				"description": "Login Service"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Circle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d0262850-9d85-45d6-a454-eee201b50cb6",
+						"exec": [
+							"//Getting path for execution\r",
+							"let executionPath = pm.variables.get(\"path\");\r",
+							"\r",
+							"//Getting response data in json format\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"//Validanting json type\r",
+							"pm.test(\"should return a valid json\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"if(executionPath === \"success\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 200 response\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"circleSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"\r",
+							"    //Validanting expected response data\r",
+							"    pm.test(\"should have an id with 36 chars\", function(){\r",
+							"        pm.expect(jsonData.id.length).to.eql(36);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have the same name as the one sent in body\", function() {\r",
+							"        var circle_name = pm.variables.get(\"circle_name\")\r",
+							"        pm.expect(jsonData.name).to.be.eql(circle_name);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have the same author as the one sent in body\", function() {\r",
+							"        var author_id = pm.variables.get(\"author_id\")\r",
+							"        pm.expect(jsonData.author.id).to.be.eql(author_id);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should have one clause\", function() {\r",
+							"        pm.expect(jsonData.rules.clauses.length).to.be.eql(1);\r",
+							"    });\r",
+							"} else if(executionPath === \"api_error\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 400 response\", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"missingFieldsSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"}\r",
+							"else if(executionPath === \"login_error\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 401 response\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid for error response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"{{circle_name}}\",\n    \"ruleMatcherType\": \"REGULAR\",\n    \"rules\": {\n        \"type\": \"CLAUSE\",\n        \"clauses\": [\n            {\n                \"type\": \"RULE\",\n                \"content\": {\n                    \"key\": \"username\",\n                    \"value\": [\n                        \"processo_qa\"\n                    ],\n                    \"condition\": \"EQUAL\"\n                }\n            }\n        ],\n        \"logicalOperator\": \"OR\"\n    },\n    \"segmentations\": [],\n    \"authorId\": \"{{author_id}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/moove/circles/",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"moove",
+						"circles",
+						""
+					]
+				},
+				"description": "Circle Service"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Builds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2754a0cb-6ad8-4d98-a19c-abcebdb20c5f",
+						"exec": [
+							"//Getting path for execution\r",
+							"let executionPath = pm.variables.get(\"path\");\r",
+							"\r",
+							"//Getting response data in json format\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"//Validanting json type\r",
+							"pm.test(\"should return a valid json\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"if(executionPath === \"success\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 200 response\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"buildSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"\r",
+							"    //Validanting expected response data\r",
+							"    pm.test(\"should have at least a content\", function(){\r",
+							"        pm.expect(jsonData.content).not.to.be.empty;\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"should be at page 0\", function () {\r",
+							"        pm.expect(jsonData.page).to.be.eql(0);\r",
+							"    });\r",
+							"} else if(executionPath === \"api_error\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 500 response\", function () {\r",
+							"        pm.response.to.have.status(500);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"apiErrorSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"}\r",
+							"else if(executionPath === \"login_error\"){\r",
+							"    //Validating response code\r",
+							"    pm.test(\"should return a 401 response\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"\r",
+							"    //Validanting json contract\r",
+							"    pm.test(\"should return a contract valid for error response\", function () {\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "x-application-id",
+						"value": "900c4342-df7e-488b-bf6f-1784ee7c0546"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
+					},
+					{
+						"key": "Origin",
+						"value": "https://darwin.continuousplatform.com"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-site"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Referer",
+						"value": "https://darwin.continuousplatform.com/circles/a8685f7b-ac6d-498b-8b89-8206c03e9322/edit"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6"
+					},
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{apiUrl}}/moove/v2/builds?tagName=&page={{page}}&status=BUILT",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"moove",
+						"v2",
+						"builds"
+					],
+					"query": [
+						{
+							"key": "tagName",
+							"value": ""
+						},
+						{
+							"key": "page",
+							"value": "{{page}}"
+						},
+						{
+							"key": "status",
+							"value": "BUILT"
+						}
+					]
+				},
+				"description": "Build Service"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "60df3298-6906-4425-917f-5bbe00dc1f9c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8a514863-33af-491f-ba86-0fc3956ef97c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5b9e3cbd-b5f0-42ba-84de-6edba853b5a0",
+			"key": "path",
+			"value": "success",
+			"type": "string"
+		},
+		{
+			"id": "0ac7d025-1500-4af9-b06c-980c71ba5749",
+			"key": "circle_name",
+			"value": "Circle",
+			"type": "string"
+		},
+		{
+			"id": "8fefbd45-4b87-4b3a-85b9-f2923b0ba3aa",
+			"key": "author_id",
+			"value": "5e397f95-11af-4512-a0d7-c68b840e818b",
+			"type": "string"
+		},
+		{
+			"id": "e0caaf44-ec0b-4c0b-9352-2ecfe1cf8625",
+			"key": "page",
+			"value": "0",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
