@@ -20,7 +20,7 @@ Realize o download de todos os arquivos deste repositório e coloque-os em um me
   6. Clique no botão para executar os testes.
 
 - Newman
-  1. Dentro do diretório onde os arquivos ".json" foram colocados, execute o comando abaixo através de linda de comando:
+  1. Dentro do diretório onde os arquivos ".json" foram colocados, execute o comando abaixo através de linha de comando:
     ```
     newman run processo_qa.postman_collection.json -g postman_globals.json -e qa.postman_environment.json -d data.json -r cli,html
     ```
