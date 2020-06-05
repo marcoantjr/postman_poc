@@ -104,4 +104,47 @@ O primeiro elemento que precisamos instalar é o Postman. Nele é possível real
  ## Resultado
  Em ambas as execuções, 43 testes devem ser executados com sucesso. 
  
+ ## Definições da POC
+ 
+ ### Metodologias, Técnicas e Boas Práticas
+  - AAA (Arrange, Act, Assert)
+      - Para todos os testes, a abordagem de definir toda base de pré-requisitos dos testes previamente, executá-los na sequencia e por realizar a etapa de asserção dos resultados foi adotada para os três serviços testados. 
+      
+  - Data Driven Testing
+      - O arquivo "data.json" serve como input de dados para todos os testes, evitando que a variação de massa tenha que ser realizada dentro do próprio script.
+      
+  - BDD
+      - A linguagem natural foi utilizada para definir o conteúdo de cada um dos testes, de forma que se torna mais fácil identificar o passo executado.
+
+  - Contract Validation
+      - Para garantir que todos os campos necessários estão presentes nas respostas, em todos os fluxos os contratos da resposta do serviço foram validados.
+      
+  - Data Flow Testing
+      - Foi utilizado o mecanismo de "data flow" para definir qual fluxo o teste deveria seguir utilizado com base uma valor passado pelo aqruivo de dados através da variável "path".
+ 
+ ### Casos de Teste
+ Foram definidos 43 Casos de Teste, dividos de acordo com os 3 serviços testados e selecionados através da variável "path" localizada dentro do arquivo "data.json".
+ 
+ Estes Casos de Teste abordaram fluxos de sucesso, onde o retorno do serviço é o correto (200), e fluxos de erros diversos, como falta de acesso, erro interno do servidor e também erro funcional de paramêtro.
+ 
+ ### Variáveis Locais, de Ambiente e Globais
+  - Locais: Variáveis que mudam durante a execução dos testes.
+      - access_token: Obtida através do serviço de Login, é utilizada para manter a autenticação do serviço.
+      - path: Está no arquivo "data.json", serve para definir o fluxo do teste dentro do script.
+      - circle_name: Está no arquivo "data.json", serve para passar como parametro no serviço Create Circle.
+      - author_id: Está no arquivo "data.json", serve para passar como parametro no serviço Create Circle.
+      - page: Está no arquivo "data.json", serve para passar como parametro no serviço Get Builds.
+  - Ambiente: Variáveis que devem ser alteradas apenas se houver mudança de ambiente.
+      - login_url: Url base do serviço Login.
+      - api_url: Url base dos serviços Create Circle e Get Builds.
+      - username: Usuário utilizado para o serviço Login, quando não informado através do arqvuio "data.json".
+      - password: Senha utilizada para o serviço Login, quando não informado através do arqvuio "data.json".
+  - Globais: Variáveis que devem permanecer sem alteração independente de onde está ocorrendo os testes.
+      - login_schema: Contrato de resposta de sucesso do serviço Login.
+      - circle_schema: Contrato de resposta de sucesso do serviço Create Circle.
+      - build_schema: Contrato de resposta de scuesso do serviço Get Builds.
+      - login_error_schema: Contrato de resposta de erro (401) do serviço de Login.
+      - api_error_schema: Contrato de resposta de erro de servidor (500) dos serviços Create Circle e Get Builds.
+      - missing_fields_schema: Contrato de respota de erro de campos (400) do serviço Create Circle.
+        
  
