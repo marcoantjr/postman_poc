@@ -20,9 +20,8 @@
 							"let jsonData = pm.response.json();\r",
 							"\r",
 							"//Setting access_token to an environment variable for next requests\r",
-							"pm.environment.set(\"accessToken\", \"\");\r",
-							"let token = jsonData.access_token;\r",
-							"pm.environment.set('accessToken', token);\r",
+							"pm.variables.set(\"access_token\", \"\");\r",
+							"pm.variables.set('access_token', jsonData.access_token);\r",
 							"\r",
 							"//Validanting json type\r",
 							"pm.test(\"should return a valid json\", function () {\r",
@@ -37,7 +36,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid for success response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"loginSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"login_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"\r",
@@ -69,7 +68,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid for error response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"login_error_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"}"
@@ -114,9 +113,9 @@
 					]
 				},
 				"url": {
-					"raw": "{{loginUrl}}/auth/realms/darwin/protocol/openid-connect/token",
+					"raw": "{{login_url}}/auth/realms/darwin/protocol/openid-connect/token",
 					"host": [
-						"{{loginUrl}}"
+						"{{login_url}}"
 					],
 					"path": [
 						"auth",
@@ -158,7 +157,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"circleSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"circle_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"\r",
@@ -188,7 +187,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"missingFieldsSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"missing_fields_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"}\r",
@@ -200,7 +199,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid for error response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"login_error_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"}"
@@ -215,7 +214,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{accessToken}}",
+							"value": "{{access_token}}",
 							"type": "string"
 						}
 					]
@@ -239,9 +238,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{apiUrl}}/moove/circles/",
+					"raw": "{{api_url}}/moove/circles/",
 					"host": [
-						"{{apiUrl}}"
+						"{{api_url}}"
 					],
 					"path": [
 						"moove",
@@ -280,7 +279,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"buildSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"build_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"\r",
@@ -300,7 +299,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"apiErrorSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"api_error_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"}\r",
@@ -312,7 +311,7 @@
 							"\r",
 							"    //Validanting json contract\r",
 							"    pm.test(\"should return a contract valid for error response\", function () {\r",
-							"        var responseSchema = JSON.parse(pm.globals.get(\"loginErrorSchema\"));\r",
+							"        var responseSchema = JSON.parse(pm.globals.get(\"login_error_schema\"));\r",
 							"        pm.expect(tv4.validate(jsonData, responseSchema)).to.be.true;\r",
 							"    });\r",
 							"}\r",
@@ -322,13 +321,21 @@
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"user-agent": true,
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{accessToken}}",
+							"value": "{{access_token}}",
 							"type": "string"
 						}
 					]
@@ -383,9 +390,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{apiUrl}}/moove/v2/builds?tagName=&page={{page}}&status=BUILT",
+					"raw": "{{api_url}}/moove/v2/builds?tagName=&page={{page}}&status=BUILT",
 					"host": [
-						"{{apiUrl}}"
+						"{{api_url}}"
 					],
 					"path": [
 						"moove",
@@ -439,27 +446,33 @@
 	],
 	"variable": [
 		{
-			"id": "5b9e3cbd-b5f0-42ba-84de-6edba853b5a0",
+			"id": "9724b0c7-bdbe-43f3-ba4b-066b159ed125",
 			"key": "path",
 			"value": "success",
 			"type": "string"
 		},
 		{
-			"id": "0ac7d025-1500-4af9-b06c-980c71ba5749",
+			"id": "cd9e9327-1cda-4c14-8d04-dc9cd48a6bd9",
 			"key": "circle_name",
 			"value": "Circle",
 			"type": "string"
 		},
 		{
-			"id": "8fefbd45-4b87-4b3a-85b9-f2923b0ba3aa",
+			"id": "00b4f500-113b-455d-ae03-f6f323792760",
 			"key": "author_id",
 			"value": "5e397f95-11af-4512-a0d7-c68b840e818b",
 			"type": "string"
 		},
 		{
-			"id": "e0caaf44-ec0b-4c0b-9352-2ecfe1cf8625",
+			"id": "89fff9b8-92b2-4a07-a4c8-0c605be74bf7",
 			"key": "page",
 			"value": "0",
+			"type": "string"
+		},
+		{
+			"id": "19f4b21a-2379-407a-b992-1afc7d5c8a85",
+			"key": "access_token",
+			"value": "",
 			"type": "string"
 		}
 	],
