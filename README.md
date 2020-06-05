@@ -3,9 +3,9 @@
 ## TL;DR;
 
 ### Pre-Requisitos
-Postman - https://www.postman.com/
-Newman - https://learning.postman.com/docs/postman/collection-runs/command-line-integration-with-newman/
-Newman-Reporter-HTML - https://www.npmjs.com/package/newman-reporter-html
+- Postman - https://www.postman.com/
+- Newman - https://learning.postman.com/docs/postman/collection-runs/command-line-integration-with-newman/
+- Newman-Reporter-HTML - https://www.npmjs.com/package/newman-reporter-html
 
 ### Scripts
 Realize o download de todos os arquivos deste repositório e coloque-os em um mesmo diretório.
