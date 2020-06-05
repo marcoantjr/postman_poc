@@ -120,12 +120,63 @@ O primeiro elemento que precisamos instalar é o Postman. Nele é possível real
       - Para garantir que todos os campos necessários estão presentes nas respostas, em todos os fluxos os contratos da resposta do serviço foram validados.
       
   - Data Flow Testing
-      - Foi utilizado o mecanismo de "data flow" para definir qual fluxo o teste deveria seguir utilizado com base uma valor passado pelo aqruivo de dados através da variável "path".
+      - Foi utilizado o mecanismo de "data flow" para definir qual fluxo o teste deveria seguir utilizado com base uma valor passado pelo aqruivo de dados através da variável "path". Para este projeto, foram definidos três fluxos: "success", "api_error" e "login_error".
  
  ### Casos de Teste
  Foram definidos 43 Casos de Teste, dividos de acordo com os 3 serviços testados e selecionados através da variável "path" localizada dentro do arquivo "data.json".
  
- Estes Casos de Teste abordaram fluxos de sucesso, onde o retorno do serviço é o correto (200), e fluxos de erros diversos, como falta de acesso, erro interno do servidor e também erro funcional de paramêtro.
+ Estes Casos de Teste abordaram fluxos de sucesso, onde o retorno do serviço é o correto (200), e fluxos de erros diversos, como falta de acesso, erro interno do servidor e também erro funcional de paramêtro. 
+ 
+#### Login
+  - Successo
+    - should return a valid json
+    - should return a 200 response
+    - should return a contract valid for success response
+    - should have expires_in equal 3600
+    - should have refresh_expires_in equal 1800
+    - should have token_type equal bearer
+    - should have not-before-policy equal 0
+    - should have scope equal profile email
+  - Erro (Invalid User)
+    - should return a valid json
+    - should return a 401 response
+    - should return a contract valid for error response
+    
+  *Os Casos de Teste de Sucesso do serviço Login são executados em dois dos três fluxos ("success" e "api_error").*
+ 
+#### Create Circle
+  - Sucesso
+    - should return a valid json
+    - should return a 200 response
+    - should return a contract valid response
+    - should have an id with 36 chars
+    - should have the same name as the one sent in body
+    - should have the same author as the one sent in body
+    - should have one clause
+  - Erro (Invalid Parameter)
+    - should return a valid json
+    - should return a 400 response
+    - should return a contract valid response
+  - Erro (Unauthorized)
+    - should return a valid json
+    - should return a 401 response
+    - should return a contract valid for error response
+
+#### Get Builds
+  - Sucesso
+    - should return a valid json
+    - should return a 200 response
+    - should return a contract valid response
+    - should have at least a content
+    - should be at page 0
+  - Erro (Invalid Parameter - Security Test)
+    - should return a valid json
+    - should return a 500 response
+    - should return a contract valid response
+  - Erro (Unauthorized)
+    - should return a valid json
+    - should return a 401 response
+    - should return a contract valid for error response
  
  ### Variáveis Locais, de Ambiente e Globais
   - Locais: Variáveis que mudam durante a execução dos testes.
